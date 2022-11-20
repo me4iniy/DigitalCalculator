@@ -6,7 +6,8 @@ using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace digitalCalculator
+namespace DigitalCalculator
+
 {
     public class Program
     {
@@ -45,10 +46,6 @@ namespace digitalCalculator
                     case 2:
                         Console.Clear();
                         ThirdFunction();
-                        break;
-                    case 3:
-                        Console.Clear();
-                        FourthFunction();
                         break;
                 }
             }
@@ -339,119 +336,6 @@ namespace digitalCalculator
             UserInterface.ShowTextFromArray(userInformation.ToArray());
 
             UserInterface.GetUserActivity();
-        }
-
-        private static void FourthFunction()
-        {
-            bool exit = false;
-
-            int notation = 0;
-            string strFirstNumber = "";
-            string strSecondNumber = "";
-
-            bool isNumbersHasPoint = false;
-
-            while (!exit) // get notation
-            {
-                string userInput = UserInterface.GetUserInput("Введите систему счисления в которой будет происходить суммирование.");
-
-                if (!int.TryParse(userInput, out notation))
-                {
-                    UserInterface.ShowText("Некорректное число");
-                    continue;
-                }
-
-                if (notation < 1 || notation > 50)
-                {
-                    UserInterface.ShowText("Слишком " + (notation < 1 ? "маленькое" : "большое") + " число");
-                    continue;
-                }
-
-                exit = true;
-            }
-
-            exit = false;
-
-            while (!exit) // get number
-            {
-                strFirstNumber = UserInterface.GetUserInput($"Введите первое число, которое мы будем складывать. Число должно состоять из символов: {string.Join(", ", NotationConverter.GetAlphabetForNotation(notation))}");
-
-                bool _tempIsDouble;
-
-                if (!IsNumberCorrectInNotation(strFirstNumber, notation, out _tempIsDouble))
-                {
-                    UserInterface.ShowText("Некорректное число");
-                    continue;
-                }
-
-                if (_tempIsDouble)
-                    isNumbersHasPoint = true;
-
-                exit = true;
-            }
-
-            exit = false;
-
-            while (!exit) // get number
-            {
-                strSecondNumber = UserInterface.GetUserInput($"Введите второе число, которое мы будем складывать. Число должно состоять из символов: {string.Join(", ", NotationConverter.GetAlphabetForNotation(notation))}");
-
-                bool _tempIsDouble;
-
-                if (!IsNumberCorrectInNotation(strSecondNumber, notation, out _tempIsDouble))
-                {
-                    UserInterface.ShowText("Некорректное число");
-                    continue;
-                }
-
-                if (_tempIsDouble)
-                    isNumbersHasPoint = true;
-
-                exit = true;
-            }
-
-            StringBuilder newStrNumberBuilder = new();
-
-            int indexOfPointInFirstNumber = NotationConverter.GetPointPosition(strFirstNumber);
-            int indexOfPointInSecondNumber = NotationConverter.GetPointPosition(strSecondNumber);
-
-            int lengthOfNewIntegerNumber = indexOfPointInFirstNumber < indexOfPointInSecondNumber ? indexOfPointInSecondNumber : indexOfPointInFirstNumber;
-            int lengthOfDoubleNumber = indexOfPointInFirstNumber == strFirstNumber.Length ? strFirstNumber.Length - indexOfPointInFirstNumber : strSecondNumber.Length - indexOfPointInSecondNumber;
-
-            char _additionalValue = '0';
-
-            for (int i = 0; i < lengthOfNewIntegerNumber; i++) 
-            {
-                char _firstValue = '0';
-                char _secondValue = '0';
-
-                if (lengthOfNewIntegerNumber - i <= indexOfPointInFirstNumber)
-                    _firstValue = strFirstNumber[i];
-
-                if (lengthOfNewIntegerNumber - i <= indexOfPointInSecondNumber)
-                    _secondValue = strSecondNumber[i];
-
-                newStrNumberBuilder.Append(GetSumOfTwoInNotation(_firstValue, _secondValue, _additionalValue, notation, out _additionalValue));
-            }
-
-            if (isNumbersHasPoint)
-            {
-                _additionalValue = '0';
-
-                for (int i = lengthOfDoubleNumber - 1; i >= 0; i--)
-                {
-                    char _firstValue = '0';
-                    char _secondValue = '0';
-
-                    if (indexOfPointInFirstNumber + i <= strFirstNumber.Length)
-                        _firstValue = strFirstNumber[i];
-
-                    if (indexOfPointInSecondNumber + i <= strSecondNumber.Length)
-                        _secondValue = strSecondNumber[i];
-
-
-                }
-            }
         }
     
         private static bool IsNumberCorrectInNotation(string numberInStr, int notation, out bool isDouble)
